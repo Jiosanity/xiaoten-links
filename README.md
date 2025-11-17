@@ -1,4 +1,4 @@
-# 友链管理仓库
+# 小十友链自助申请工具
 
 这是小十博客的友链管理公开仓库，用于存储和管理博客友链数据。
 
@@ -7,7 +7,7 @@
 - 📝 通过 GitHub Issue 自助提交友链申请
 - 🤖 自动化处理和审核流程
 - 🔄 自动更新 `links.json` 文件
-- 🚀 支持友链分类（朋友、大佬、团体）
+- 🚀 支持友链分类（朋友、大佬、联盟组织）
 
 ## 📋 如何添加友链
 
@@ -67,7 +67,6 @@
 
 - 博客主站：https://www.xiaoten.com/
 - 友圈页面：https://www.xiaoten.com/pages/links/
-- 故障排查：[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
 
 ## 📜 许可证
 
