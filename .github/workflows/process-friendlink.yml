@@ -16,8 +16,8 @@ jobs:
   process-friendlink:
     runs-on: ubuntu-latest
     if: |
-      (github.event_name == 'issue_comment' && contains(github.event.issue.labels.*.name, 'friendlink')) ||
-      (github.event_name == 'issues' && github.event.action == 'labeled' && github.event.label.name == 'approved' && contains(github.event.issue.labels.*.name, 'friendlink'))
+      (github.event_name == 'issue_comment' && contains(github.event.issue.labels.*.name, '友情链接')) ||
+      (github.event_name == 'issues' && github.event.action == 'labeled' && github.event.label.name == '已批准' && contains(github.event.issue.labels.*.name, '友情链接'))
     
     steps:
       # Step 1: 处理审批评论
@@ -37,8 +37,8 @@ jobs:
               return;
             }
             
-            // 检查是否已经有 approved 标签
-            const hasApproved = context.payload.issue.labels.some(label => label.name === 'approved');
+            // 检查是否已经有 已批准 标签
+            const hasApproved = context.payload.issue.labels.some(label => label.name === '已批准');
             if (hasApproved) {
               console.log('Issue already has approved label, will process directly');
               core.setOutput('approved', 'true');
@@ -59,24 +59,24 @@ jobs:
               return;
             }
             
-            // 添加 approved 标签
+            // 添加 已批准 标签
             await github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              labels: ['approved']
+              labels: ['已批准']
             });
             
-            // 移除 pending 标签
+            // 移除 待处理 标签
             try {
               await github.rest.issues.removeLabel({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
-                name: 'pending'
+                name: '待处理'
               });
             } catch (error) {
-              console.log('Pending label not found or already removed');
+              console.log('待处理 label not found or already removed');
             }
             
             // 添加确认评论
@@ -118,7 +118,7 @@ jobs:
             });
             
             // 检查是否有 approved 标签
-            const hasApproved = issue.labels.some(label => label.name === 'approved');
+            const hasApproved = issue.labels.some(label => label.name === '已批准');
             if (!hasApproved) {
               console.log('Issue does not have approved label yet, skipping processing');
               return JSON.stringify({ updated: false });
@@ -259,7 +259,7 @@ jobs:
             请检查 `links.json` 的变更是否正确。
             
             合并后，友链数据会自动同步到博客站点。
-          labels: friendlink,auto-pr
+          labels: 友情链接,自动PR
 
       - name: Comment on Issue
         if: steps.outputs.outputs.updated == 'true'

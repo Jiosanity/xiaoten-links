@@ -1,7 +1,7 @@
 name: 友链申请
 description: 申请添加你的博客到友链列表
 title: "[友链申请] "
-labels: ["friendlink", "pending"]
+labels: ["友情链接", "待处理"]
 body:
   - type: markdown
     attributes:
@@ -58,9 +58,9 @@ body:
       label: 友链分类
       description: 选择适合的分类
       options:
-        - friends (朋友)
-        - experts (大佬)
-        - groups (团体)
+        - friends (👫 朋友)
+        - experts (🫅 大佬)
+        - groups (🏢 联盟组织)
       default: 0
     validations:
       required: true
