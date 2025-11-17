@@ -9,12 +9,7 @@ body:
         ## 📝 友链申请
         
         感谢你的友链申请！请填写以下信息。
-        
-        **小十博客友链信息：**
-        - 名称：小十的个人博客 或 小十博客
-        - 描述：十分之十的小十
-        - URL：https://www.xiaoten.com/
-        - 头像：https://www.xiaoten.com/avatar.png
+
 
   - type: input
     id: blog-name
@@ -31,15 +26,6 @@ body:
       label: 博客地址
       description: 你的博客完整URL地址
       placeholder: https://www.example.com/
-    validations:
-      required: true
-
-  - type: textarea
-    id: blog-description
-    attributes:
-      label: 博客描述
-      description: 简短描述你的博客（不超过50字）
-      placeholder: 这是一个关于技术和生活的博客
     validations:
       required: true
 
@@ -64,6 +50,24 @@ body:
       default: 0
     validations:
       required: true
+
+  - type: input
+    id: blog-rss
+    attributes:
+      label: RSS地址
+      description: 你的博客RSS订阅地址（可选）
+      placeholder: https://www.example.com/feed.xml
+    validations:
+      required: false
+
+  - type: textarea
+    id: blog-description
+    attributes:
+      label: 博客描述
+      description: 简短描述你的博客（可选，不超过50字）
+      placeholder: 这是一个关于技术和生活的博客
+    validations:
+      required: false
 
   - type: checkboxes
     id: terms
