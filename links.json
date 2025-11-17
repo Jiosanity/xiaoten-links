@@ -183,6 +183,12 @@
             "url": "https://bokehub.com/",
             "src": "https://bokehub.com/assets/images/sites/logo/logo-small.png",
             "des": "中文独立博客收录聚合平台 | 发现优质个人博客"
+        },
+        {
+            "name": "博友圈",
+            "url": "https://www.boyouquan.com/",
+            "src": "https://www.boyouquan.com/assets/favicon.ico",
+            "des": "博友圈是博客人的专属朋友圈。"
         }
     ]
 }
