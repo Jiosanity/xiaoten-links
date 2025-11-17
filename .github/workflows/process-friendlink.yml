@@ -12,15 +12,18 @@ permissions:
   pull-requests: write
 
 jobs:
-  # Job 1: 处理审批评论，添加 approved 标签
-  approve-application:
+  # 处理友链申请：审批和自动处理
+  process-friendlink:
     runs-on: ubuntu-latest
     if: |
-      github.event_name == 'issue_comment' &&
-      contains(github.event.issue.labels.*.name, 'friendlink')
+      (github.event_name == 'issue_comment' && contains(github.event.issue.labels.*.name, 'friendlink')) ||
+      (github.event_name == 'issues' && github.event.action == 'labeled' && github.event.label.name == 'approved' && contains(github.event.issue.labels.*.name, 'friendlink'))
     
     steps:
-      - name: Check approval comment
+      # Step 1: 处理审批评论
+      - name: Check and approve application
+        if: github.event_name == 'issue_comment'
+        id: approval
         uses: actions/github-script@v7
         with:
           script: |
@@ -30,13 +33,15 @@ jobs:
             // 检查是否包含 /approve 命令
             if (!commentBody.includes('/approve')) {
               console.log('Comment does not contain /approve command');
+              core.setOutput('approved', 'false');
               return;
             }
             
             // 检查是否已经有 approved 标签
             const hasApproved = context.payload.issue.labels.some(label => label.name === 'approved');
             if (hasApproved) {
-              console.log('Issue already has approved label');
+              console.log('Issue already has approved label, will process directly');
+              core.setOutput('approved', 'true');
               return;
             }
             
@@ -50,6 +55,7 @@ jobs:
                 issue_number: context.issue.number,
                 body: '❌ 抱歉，只有仓库维护者可以批准友链申请。'
               });
+              core.setOutput('approved', 'false');
               return;
             }
             
@@ -80,21 +86,23 @@ jobs:
               issue_number: context.issue.number,
               body: '✅ 友链申请已批准！正在自动处理...'
             });
+            
+            core.setOutput('approved', 'true');
 
-  # Job 2: 处理已批准的申请，更新 links.json 并创建 PR
-  process-approved-application:
-    runs-on: ubuntu-latest
-    if: |
-      (github.event_name == 'issues' && github.event.action == 'labeled' && github.event.label.name == 'approved') &&
-      contains(github.event.issue.labels.*.name, 'friendlink')
-    
-    steps:
+      # Step 2: Checkout repository
       - name: Checkout repository
+        if: |
+          (github.event_name == 'issue_comment') ||
+          (github.event_name == 'issues' && github.event.action == 'labeled')
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      # Step 3: 解析 Issue 并更新 links.json
       - name: Parse issue and update links.json
+        if: |
+          (github.event_name == 'issue_comment') ||
+          (github.event_name == 'issues' && github.event.action == 'labeled')
         id: parse-issue
         uses: actions/github-script@v7
         with:
@@ -102,6 +110,13 @@ jobs:
           script: |
             const fs = require('fs');
             const issue = context.payload.issue;
+            
+            // 检查是否有 approved 标签
+            const hasApproved = issue.labels.some(label => label.name === 'approved');
+            if (!hasApproved) {
+              console.log('Issue does not have approved label yet, skipping processing');
+              return JSON.stringify({ updated: false });
+            }
             
             // 检查是否已经处理过（通过检查是否有自动PR）
             const comments = await github.rest.issues.listComments({
