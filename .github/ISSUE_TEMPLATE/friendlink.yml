@@ -44,8 +44,8 @@ body:
       label: 友链分类
       description: 选择适合的分类
       options:
-        - friends (👫 朋友)
-        - experts (🫅 大佬)
+        - friends (👫 朋友们)
+        - experts (🫅 大佬们)
         - groups (🏢 联盟组织)
       default: 0
     validations:
